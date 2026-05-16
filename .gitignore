@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+.env*.local
+*.log
+.DS_Store
+coverage/
+backend/prisma/*.db
+
+# Ignore local demo/workspace exports not part of the core app
+saarthi-guided-performance-main/
+
+# Local editor and prompt artifacts
+.vscode/
+Saarthi master prompt.txt

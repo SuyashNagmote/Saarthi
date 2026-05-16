@@ -1,0 +1,31 @@
+graph TD
+    subgraph Frontend [Frontend (Next.js)]
+        A1[React UI] --> A2[Zod + React Hook Form]
+        A2 --> A3[TanStack Query]
+    end
+
+    subgraph Auth [Authentication]
+        A3 -- Login/Register --> B1[JWT Auth Flow]
+        A3 -- SSO --> B2[Azure AD SSO]
+    end
+
+    subgraph Backend [Backend (NestJS)]
+        B1 --> C1[Controllers]
+        B2 --> C1
+        C1 --> C2[Services & RBAC]
+        C2 --> C3[Prisma ORM]
+    end
+
+    subgraph Database [Database]
+        C3 --> D1[(PostgreSQL)]
+    end
+
+    subgraph Hosting [Cost Optimised Hosting]
+        H1[Vercel - Frontend]
+        H2[Railway / Render - Backend]
+        H3[Supabase / Neon - PostgreSQL]
+    end
+
+    Frontend -. Deployed to .-> H1
+    Backend -. Deployed to .-> H2
+    Database -. Hosted on .-> H3

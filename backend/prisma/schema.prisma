@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Quarter {
+  Q1
+  Q2
+  Q3
+  Q4
+  ANNUAL
+}
+
+enum UoMType {
+  NUMERIC
+  PERCENTAGE
+  TIMELINE
+  ZERO_BASED
+}
+
+enum GoalType {
+  MIN_TYPE
+  MAX_TYPE
+  TIMELINE
+  ZERO_BASED
+}
+
+enum GoalStatus {
+  DRAFT
+  SUBMITTED
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  REWORK_REQUESTED
+  LOCKED
+  CYCLE_CLOSED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REWORK_REQUESTED
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  ON_TRACK
+  AT_RISK
+  COMPLETED
+  MISSED
+}
+
+model User {
+  id              String    @id @default(uuid())
+  name            String
+  email           String    @unique
+  password_hash   String?
+  azure_id        String?   @unique
+  role            Role      @default(EMPLOYEE)
+  department      String
+  designation     String
+  manager_id      String?
+  manager         User?     @relation("Reports", fields: [manager_id], references: [id])
+  reports         User[]    @relation("Reports")
+  is_active       Boolean   @default(true)
+  attrition_score Float?
+  attrition_risk  RiskLevel @default(LOW)
+  last_login_at   DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  goals           Goal[]
+  approvals       Approval[]
+  check_ins       CheckIn[]
+  audit_logs      AuditLog[]
+  created_cycles  GoalCycle[] @relation("CycleCreator")
+  notifications   Notification[]
+
+  @@index([manager_id])
+  @@index([department])
+  @@map("users")
+}
+
+model GoalCycle {
+  id         String   @id @default(uuid())
+  name       String
+  quarter    Quarter
+  start_date DateTime
+  end_date   DateTime
+  is_active  Boolean  @default(false)
+  created_by String
+  creator    User     @relation("CycleCreator", fields: [created_by], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  goals      Goal[]
+
+  @@map("goal_cycles")
+}
+
+model Goal {
+  id                 String     @id @default(uuid())
+  employee_id        String
+  employee           User       @relation(fields: [employee_id], references: [id])
+  cycle_id           String
+  cycle              GoalCycle  @relation(fields: [cycle_id], references: [id])
+
+  thrust_area        String
+  title              String
+  description        String
+  uom_type           UoMType
+  goal_type          GoalType
+  target_value       Float
+  weightage          Float
+  deadline           DateTime
+  category           String
+
+  status             GoalStatus @default(DRAFT)
+  is_locked          Boolean    @default(false)
+  lock_reason        String?
+
+  self_achievement   Float?
+  self_rating        Float?
+  self_notes         String?
+
+  actual_achievement Float?
+  computed_score     Float?
+  weighted_score     Float?
+  final_rating       Float?
+
+  smart_score        Float?
+  smart_breakdown    String?
+
+  ai_risk_flag       String?
+  ai_risk_reason     String?
+
+  is_shared          Boolean    @default(false)
+  primary_owner_id   String?
+  parent_goal_id     String?
+  parent_goal        Goal?      @relation("SharedGoals", fields: [parent_goal_id], references: [id])
+  child_goals        Goal[]     @relation("SharedGoals")
+
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
+  approvals          Approval[]
+  check_ins          CheckIn[]
+
+  @@index([employee_id, cycle_id])
+  @@index([status])
+  @@index([parent_goal_id])
+  @@map("goals")
+}
+
+model Approval {
+  id               String         @id @default(uuid())
+  goal_id          String
+  goal             Goal           @relation(fields: [goal_id], references: [id], onDelete: Cascade)
+  manager_id       String
+  manager          User           @relation(fields: [manager_id], references: [id])
+  status           ApprovalStatus
+  comments         String?
+  edited_target    Float?
+  edited_weightage Float?
+  version          Int            @default(1)
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+
+  @@index([manager_id, status])
+  @@map("approvals")
+}
+
+model CheckIn {
+  id                 String         @id @default(uuid())
+  goal_id            String
+  goal               Goal           @relation(fields: [goal_id], references: [id], onDelete: Cascade)
+  employee_id        String
+  employee           User           @relation(fields: [employee_id], references: [id])
+  quarter            Quarter
+  actual_achievement Float
+  progress_notes     String?
+  nl_input           String?
+  goal_status        ProgressStatus
+  manager_comment    String?
+  recommendation     String?
+  reviewed_by        String?
+  reviewed_at        DateTime?
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+
+  @@index([goal_id, quarter])
+  @@map("check_ins")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  entity_type String
+  entity_id   String
+  action      String
+  changed_by  String
+  changer     User     @relation(fields: [changed_by], references: [id])
+  old_value   String
+  new_value   String
+  diff        String
+  ip_address  String
+  user_agent  String
+  created_at  DateTime @default(now())
+
+  @@index([entity_type, entity_id])
+  @@index([changed_by])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  type       String
+  title      String
+  message    String
+  is_read    Boolean  @default(false)
+  action_url String?
+  created_at DateTime @default(now())
+
+  @@index([user_id, is_read])
+  @@map("notifications")
+}
+
+model EscalationRule {
+  id           String          @id @default(uuid())
+  trigger_type String
+  trigger_days Int
+  notify_level Int
+  is_active    Boolean         @default(true)
+  created_at   DateTime        @default(now())
+  logs         EscalationLog[]
+
+  @@map("escalation_rules")
+}
+
+model EscalationLog {
+  id          String         @id @default(uuid())
+  rule_id     String
+  rule        EscalationRule @relation(fields: [rule_id], references: [id])
+  target_user String
+  notified_to String
+  level       Int
+  resolved    Boolean        @default(false)
+  created_at  DateTime       @default(now())
+
+  @@map("escalation_logs")
+}
