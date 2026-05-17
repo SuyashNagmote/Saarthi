@@ -15,10 +15,12 @@ function clientMeta(req: Request) {
 }
 
 function setRefreshCookie(res: Response, token: string) {
+  const isProd = process.env.NODE_ENV === 'production';
   res.cookie(authService.REFRESH_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProd,
+    // cross-origin on Vercel: frontend and backend are different domains
+    sameSite: isProd ? 'none' : 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: '/api/v1/auth',
   });
