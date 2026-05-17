@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { msalConfig } from '@/lib/msal-config';
@@ -9,6 +9,15 @@ import { msalConfig } from '@/lib/msal-config';
 const msalInstance = new PublicClientApplication(msalConfig);
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [isMsalInitialized, setIsMsalInitialized] = useState(false);
+
+  useEffect(() => {
+    // MSAL v3 requires explicit initialization before it can parse the popup hash and close the window.
+    msalInstance.initialize().then(() => {
+      setIsMsalInitialized(true);
+    });
+  }, []);
+
   const [client] = useState(
     () =>
       new QueryClient({
@@ -21,6 +30,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       }),
   );
+
+  // Don't render the app until MSAL is ready, otherwise the popup won't close
+  if (!isMsalInitialized) {
+    return null; 
+  }
+
   return (
     <MsalProvider instance={msalInstance}>
       <QueryClientProvider client={client}>{children}</QueryClientProvider>
