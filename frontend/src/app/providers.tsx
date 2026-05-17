@@ -16,9 +16,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // before it can successfully close the popup window.
     msalInstance.initialize().then(() => {
       return msalInstance.handleRedirectPromise();
-    }).then(() => {
+    }).catch((e) => {
+      console.error("MSAL init error:", e);
+    }).finally(() => {
       setIsMsalInitialized(true);
-    }).catch(console.error);
+    });
   }, []);
 
   const [client] = useState(
