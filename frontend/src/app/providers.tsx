@@ -12,10 +12,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [isMsalInitialized, setIsMsalInitialized] = useState(false);
 
   useEffect(() => {
-    // MSAL v3 requires explicit initialization before it can parse the popup hash and close the window.
+    // MSAL v3 requires explicit initialization and handling the redirect hash 
+    // before it can successfully close the popup window.
     msalInstance.initialize().then(() => {
+      return msalInstance.handleRedirectPromise();
+    }).then(() => {
       setIsMsalInitialized(true);
-    });
+    }).catch(console.error);
   }, []);
 
   const [client] = useState(
