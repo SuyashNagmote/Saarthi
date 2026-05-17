@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 
 const links = ["Product", "Workflow", "Enterprise", "Resources"];
 
@@ -43,11 +44,11 @@ export function Navbar() {
     >
       <div style={{ position: "relative", height: "100%", maxWidth: 1280, margin: "0 auto", padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {/* Logo */}
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "inherit" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "inherit" }}>
           <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: 22, color: "var(--gold)", lineHeight: 1, transform: "translateY(1px)", display: "inline-block" }}>स</span>
           <span style={{ width: 1, height: 18, background: "var(--border-default)" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)", letterSpacing: "-0.01em" }}>Saarthi</span>
-        </a>
+        </Link>
 
         {/* Center nav (absolutely centered) */}
         <nav
@@ -76,12 +77,12 @@ export function Navbar() {
 
         {/* Right */}
         <div className="hidden md:flex" style={{ alignItems: "center", gap: 18 }}>
-          <a href="/login" style={{ fontSize: 13, color: "var(--text-secondary)", textDecoration: "none", transition: "color 120ms ease" }}
+          <Link href="/login" style={{ fontSize: 13, color: "var(--text-secondary)", textDecoration: "none", transition: "color 120ms ease" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-primary)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
           >
             Sign in
-          </a>
+          </Link>
           <CtaButton>Get early access</CtaButton>
         </div>
 
@@ -114,7 +115,7 @@ export function Navbar() {
             <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setOpen(false)} style={{ fontSize: 14, color: "var(--text-secondary)", textDecoration: "none" }}>{l}</a>
           ))}
           <div style={{ height: 1, background: "var(--border-subtle)" }} />
-          <a href="/login" style={{ fontSize: 14, color: "var(--text-secondary)", textDecoration: "none" }}>Sign in</a>
+          <Link href="/login" style={{ fontSize: 14, color: "var(--text-secondary)", textDecoration: "none" }}>Sign in</Link>
           <CtaButton>Get early access</CtaButton>
         </div>
       )}
