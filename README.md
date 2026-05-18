@@ -1,163 +1,187 @@
-<div align="center">
+# Saarthi — Enterprise Performance Management Platform
 
-# 🎯 Saarthi — In-House Goal Setting & Tracking Portal
+> **Goals, perfectly aligned.**  
+> Replacing fragmented spreadsheets and disconnected review systems with a secure, analytics-driven, AI-assisted platform — built for real enterprise workflows.
 
-### Submission for ATOMQUEST HACKATHON 1.0
-
-**An enterprise-grade, rule-enforcing, AI-powered Performance Management System designed to eliminate fragmented workflows and align organizational priorities.**
-
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.5-black?logo=next.js)](https://nextjs.org/)
-[![Express](https://img.shields.io/badge/Express-5.1-green?logo=express)](https://expressjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://postgresql.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-6.8-purple?logo=prisma)](https://www.prisma.io/)
-
-</div>
+🔗 **Live Demo**
+- Frontend: [saarthi-frontend-self.vercel.app](https://saarthi-frontend-self.vercel.app)
+- Backend API: [saarthi-backend-snowy.vercel.app/health](https://saarthi-backend-snowy.vercel.app/health)
 
 ---
 
-## 📖 Executive Summary
+## 🧩 The Problem
 
-Saarthi was architected from the ground up to solve the exact problem statement presented in the **ATOMQUEST HACKATHON 1.0 BRD**. It replaces spreadsheets and disjointed emails with a centralized, rule-enforced platform that covers the entire goal lifecycle.
+Most organizations track employee performance through spreadsheets, email threads, and disconnected tools. This leads to:
+- Goals set once and forgotten
+- No visibility into quarterly progress
+- Manual, error-prone approval workflows
+- Zero data-driven insights for managers
 
-Our submission guarantees **100% compliance** with all mandatory functional requirements, strict validation rules, check-in schedules, and governance constraints, while proudly implementing **ALL 4 Bonus Features** to deliver a truly production-ready enterprise product.
-
----
-
-## 🏆 Hackathon Compliance Matrix
-
-### 2.1 Phase 1 — Goal Creation & Approval (Must-Have)
-✅ **Employee Interface:** Full CRUD for Goal Sheets mapping Thrust Areas, Descriptions, UoMs, and Targets.
-✅ **Strict System Validation (Backend Enforced):**
-- Total weightage must equal **exactly 100%** (blocks submission otherwise).
-- Minimum weightage of **10%** per goal.
-- Maximum of **8 goals** per employee per cycle.
-✅ **Manager (L1) Workflow:** Managers can review, reject, or perform inline edits to targets/weightages. Approved goals are cryptographically locked.
-✅ **Shared Goals / Cascading KPIs:** Managers can push departmental KPIs. Child goals inherit title/target (Read-Only) but allow weightage adjustment. Achievements automatically sync up to the primary owner.
-
-### 2.2 Phase 2 — Achievement & Check-ins (Must-Have)
-✅ **Quarterly Tracking:** Employees can update progress against planned targets and update status.
-✅ **Manager Check-ins:** Managers can view Planned vs. Actual progress and log structured feedback comments.
-✅ **System-Computed Scores:** Formula logic strictly mirrors BRD specifications:
-- `Min (Numeric/%)`: Higher is better `(Achievement ÷ Target) * 100`
-- `Max (Numeric/%)`: Lower is better `(Target ÷ Achievement) * 100`
-- `Timeline`: Date-based completion algorithm.
-- `Zero-Based`: `100%` if Zero incidents, else `0%`.
-
-### 2.3 Check-in Schedule Enforcement
-✅ **Time-Gated Windows:** The backend dynamically calculates the current month and completely disables submission endpoints outside the allowed BRD windows (May, July, Oct, Jan, Mar/Apr), throwing HTTP 403 `WINDOW_CLOSED` errors.
-
-### 3. User Roles & Personas
-✅ **Employee:** Draft goals, log actuals, update progress.
-✅ **Manager (L1):** Approve team goals, conduct quarterly check-ins, push shared KPIs.
-✅ **Admin / HR:** Configure org structure, manage cycles, access raw audit logs, and forcefully unlock goals.
-
-### 4. Reporting & Governance
-✅ **Achievement Report:** 1-click Excel export of Planned vs Actual data for all users.
-✅ **Completion Dashboard:** Live tracking of check-in compliance across the org.
-✅ **Immutable Audit Trail:** Every database mutation post-approval is permanently logged, capturing `Who`, `What`, `Old Value`, `New Value`, `IP`, and `User Agent`.
+**Saarthi solves this end-to-end** — from goal creation to annual review, with AI-backed risk detection and a 0.14% top-performer selection engine (10 out of 7,000).
 
 ---
 
-## ⭐ Bonus Features Implemented (Section 5)
+## ✨ Key Features
 
-Our team went above and beyond to implement every single "Good-to-Have" feature requested in the problem statement:
-
-### 5.1 Microsoft Entra ID (Azure AD) Integration
-- **Full SSO:** `@azure/msal-browser` and `@azure/msal-node` integration.
-- **Auto-Provisioning:** First-time Azure logins instantly create PostgreSQL records.
-- **Org Sync:** Queries MS Graph API `/me/manager` to auto-link reporting lines.
-- **AD Group RBAC:** Maps users in `Saarthi-Admins` and `Saarthi-Managers` Azure groups directly to system Roles.
-
-### 5.2 Email & Microsoft Teams Integration
-- **Automated Emails:** Nodemailer triggers on Submission, Approval, Rejection, and Escalation.
-- **Teams Adaptive Cards:** MS Teams webhook integration fires rich, interactive notification cards directly to a manager's channel when goals await approval.
-
-### 5.3 Escalation Module (Rule-Based)
-- **Automated SLAs:** A Node Cron job continuously evaluates pending approvals.
-- **Breach Chain:** If a manager sits on an approval past the configured SLA (default 48h), the system automatically logs an SLA Breach and escalates visibility to Admins/HR.
-
-### 5.4 Analytics Module
-- **QoQ Trends:** Aggregated scoring trends per team/department.
-- **Heatmaps:** Live completion tracking visualizer.
-- **Goal Distribution:** Visual breakdown of Thrust Areas and Statuses.
-- **Manager Effectiveness:** Checks L1 manager approval speeds and check-in compliance.
+| Feature | Description |
+|---|---|
+| 🎯 SMART Goal Engine | AI validates goals against Specific, Measurable, Achievable, Relevant, Time-bound criteria |
+| ✅ Approval Workflow | Manager queue with edit, approve, reject, rework — fully versioned |
+| 📅 Quarterly Check-ins | Progress submissions per quarter with risk auto-flagging |
+| 📊 Analytics Dashboard | Heatmaps, trends, distribution charts, peer comparison |
+| 🔐 Azure AD SSO | MSAL v3 + JWT + RBAC — enterprise-grade auth out of the box |
+| 🤖 Attrition Detection | Multi-factor risk scoring to flag at-risk employees early |
 
 ---
 
-## 🏗️ Architecture & Technology Stack (Parameter 6: Cost Optimization)
-
-Our architecture was intentionally designed for maximum performance, minimal cloud expenditure, and seamless scalability. 
+## 🏗️ Architecture
 
 ```
-┌─────────────────┐     REST/JSON      ┌─────────────────┐     Prisma ORM     ┌──────────────┐
-│   Next.js 15    │ ◄──────────────► │   Express 5     │ ◄────────────────► │ PostgreSQL   │
-│   (Vercel Edge) │     JWT Auth       │  (Serverless)   │                    │  (Neon DB)   │
-└────────┬────────┘                    └────────┬────────┘                    └──────────────┘
-         │                                      │
-    ┌────┴────┐                           ┌─────┴─────┐
-    │ MSAL.js │                           │ Azure AD  │
-    │ Browser │ ── SSO ──────────────►    │ Graph API │
-    └─────────┘                           └───────────┘
+╔══════════════════════════════════════════════════════════════════╗
+║              SAARTHI PERFORMANCE MANAGEMENT PLATFORM            ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌─────────────────── CLIENT LAYER ───────────────────────────────┐
+│  Next.js :3000 (Dashboard)     Vite :5173 (Guided Tool)        │
+│  · MSAL v3 Auth                · WebSocket real-time           │
+│  · Role-based UI               · Lightweight UX                │
+└────────────────────────┬───────────────────────────────────────┘
+                         │ HTTPS / JWT Cookie
+┌────────────────────────▼───────────────────────────────────────┐
+│                 AUTH & SECURITY LAYER                          │
+│  Azure AD (MSAL) ──► /api/v1/auth/azure                       │
+│  Groups → Role Map:  Saarthi-Admins    → ADMIN                │
+│                      Saarthi-Managers  → MANAGER              │
+│                      Saarthi-Employees → EMPLOYEE             │
+│  JWT: Access (15min) + Refresh (7d) → httpOnly cookie         │
+└────────────────────────┬───────────────────────────────────────┘
+                         │
+┌────────────────────────▼───────────────────────────────────────┐
+│              EXPRESS.JS API GATEWAY                            │
+│  Middleware: CORS → JSON → CookieParser → JWT Guard            │
+│                                                                │
+│  /api/v1/                                                      │
+│  ├── /auth        · /goals      · /approvals                  │
+│  ├── /checkins    · /cycles     · /dashboard                  │
+│  ├── /reports     · /ai         · /analytics                  │
+│  ├── /audit       · /notifications · /escalation              │
+└──────┬───────────┬──────────────┬──────────────────────────────┘
+       │           │              │
+┌──────▼────┐ ┌───▼──────┐ ┌────▼──────────────────────────────┐
+│  SCORING  │ │    AI    │ │         BUSINESS MODULES           │
+│  SERVICE  │ │ SERVICE  │ │                                    │
+│           │ │          │ │  Goals      Approvals   Check-ins  │
+│ weighted  │ │  SMART   │ │  DRAFT  →  PENDING  →  Q1-Q4     │
+│ _score =  │ │  score   │ │  SUBMITTED  APPROVED   progress   │
+│ achieve%  │ │  (S/M/A  │ │  APPROVED   REJECTED   notes      │
+│ × weight  │ │  /R/T)   │ │  LOCKED     REWORK     status     │
+│           │ │          │ │  CLOSED                           │
+│ ≥100% → 5 │ │  Risk    │ │                                    │
+│ ≥90%  → 4 │ │  flags:  │ │  Attrition  Audit      Notify    │
+│ ≥80%  → 3 │ │  <80% @  │ │  LOW/MED    every      email     │
+│ ≥50%  → 2 │ │  halfway │ │  HIGH/CRIT  action     in-app    │
+│ else  → 1 │ │  missed  │ │                                   │
+└──────┬────┘ └───┬──────┘ └────┬──────────────────────────────┘
+       │           │              │
+┌──────▼───────────▼──────────────▼──────────────────────────────┐
+│                   PostgreSQL + Prisma ORM                      │
+│  users → goals → approvals → check_ins → audit_logs           │
+│  Indexes: employee_id, cycle_id, status, manager_id           │
+└────────────────────────────────────────────────────────────────┘
+
 ```
 
-**Cost Optimization Strategies:**
-- **Frontend:** Next.js 15 deployed on Vercel's global edge network (Free Tier).
-- **Backend:** Stateless Express.js API designed to run flawlessly in serverless environments (Vercel Functions/Render) eliminating idle compute costs.
-- **Database:** Neon Serverless PostgreSQL with auto-suspend compute to reduce active billing by up to 80% during non-working hours.
-- **Caching:** TanStack Query implemented aggressively on the client-side to minimize redundant API calls and database reads.
+---
+
+## 📊 Performance Lifecycle
+
+```
+Goal Creation → Manager Review → Approval/Rework → Goal Locking
+      → Quarterly Check-ins → Scoring → Risk Detection → Annual Review
+```
 
 ---
 
-## 🚀 Live Demo & Access
+## 🔐 Role-Based Access
 
-### URLs
-- **Live Portal:** `https://<YOUR_FRONTEND_VERCEL_URL>`
-- **API Health:** `https://<YOUR_BACKEND_VERCEL_URL>/health`
-
-### Demo Credentials
-To evaluate the platform without Microsoft SSO, use the following provisioned accounts:
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | `sarah@techcorp.com` | `Admin@123` |
-| **Manager** | `raj@techcorp.com` | `Manager@123` |
-| **Employee** | `arjun@techcorp.com` | `Employee@123` |
+| Capability | Employee | Manager | Admin |
+|---|:---:|:---:|:---:|
+| Create / Edit Goals | ✅ | ✅ | ✅ |
+| Approve Goals | ❌ | ✅ | ✅ |
+| View Team Analytics | ❌ | ✅ | ✅ |
+| Org-wide Visibility | ❌ | ❌ | ✅ |
+| Manage Cycles | ❌ | ❌ | ✅ |
+| Audit Logs | ❌ | ❌ | ✅ |
 
 ---
 
-## 🛠️ Local Development Setup
+## 🛠️ Tech Stack
 
-### 1. Install & Configure
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15 + Tailwind CSS + shadcn/ui |
+| Backend | Express.js (TypeScript) |
+| Database | PostgreSQL + Prisma ORM |
+| Auth | Microsoft Azure AD + MSAL v3 + JWT |
+| State | TanStack Query |
+| Charts | Recharts |
+| Deployment | Vercel |
+
+---
+
+## 🚀 Local Setup
+
 ```bash
-git clone https://github.com/your-org/saarthi.git
-cd saarthi
-npm install
+# Clone
+git clone <repo-url> && cd Saarthi
+
+# Frontend
+cd frontend && npm install && npm run dev
+
+# Backend
+cd backend && npm install && npm run dev
+
+# Database
+npx prisma migrate dev && npx prisma generate
 ```
 
-### 2. Environment Variables
-Create a `backend/.env` file with the following keys:
+### Environment Variables
+
+**Frontend** (`.env.local`):
 ```env
-DATABASE_URL=postgresql://user:pass@host/db
-DIRECT_URL=postgresql://user:pass@host/db
-JWT_SECRET=your_super_secret_key
-JWT_REFRESH_SECRET=your_super_secret_refresh_key
-ALLOWED_ORIGINS=http://localhost:3000
+NEXT_PUBLIC_AZURE_CLIENT_ID=
+NEXT_PUBLIC_AZURE_TENANT_ID=
+NEXT_PUBLIC_API_URL=
 ```
 
-### 3. Initialize Database
-```bash
-npm run db:push -w backend
-npm run db:seed -w backend
-```
-
-### 4. Run Servers Concurrently
-```bash
-npm run dev
+**Backend** (`.env`):
+```env
+DATABASE_URL=
+JWT_SECRET=
+AZURE_CLIENT_ID=
+AZURE_CLIENT_SECRET=
+AZURE_TENANT_ID=
 ```
 
 ---
 
-<div align="center">
-  <sub>Built with ❤️ by the Saarthi Team for ATOMQUEST 1.0</sub>
-</div>
+## 📁 Project Structure
+
+```
+Saarthi/
+├── frontend/          # Next.js 15 App Router
+│   ├── app/           # Routes + layouts
+│   ├── components/    # UI + dashboard components
+│   └── lib/           # MSAL config, API clients, hooks
+│
+└── backend/           # Express.js API
+    ├── src/
+    │   ├── modules/   # goals, approvals, checkins, users
+    │   ├── common/    # guards, scoring, AI services
+    │   └── app.ts     # Express setup
+    └── prisma/        # Schema + migrations
+```
+
+---
+
+Built for AtomQuest Hackathon — enterprise-grade performance management, from goal to growth.
