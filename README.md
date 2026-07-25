@@ -183,5 +183,3 @@ Saarthi/
 ```
 
 ---
-
-Built for AtomQuest Hackathon — enterprise-grade performance management, from goal to growth.
